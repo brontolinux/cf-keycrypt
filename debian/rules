@@ -17,6 +17,7 @@ include /usr/share/dpkg/default.mk
 #export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
 CF_SRC = /tmp/cf-keycrypt-cf3src
+CF_BRANCH = 3.15.x
 
 clean:
 	rm -f cf-keycrypt
@@ -25,9 +26,9 @@ clean:
 
 binary:
 	mkdir -p $(CF_SRC)
-	git clone https://github.com/cfengine/core.git $(CF_SRC)
+	git clone --recursive --single-branch --branch $(CF_BRANCH) https://github.com/cfengine/core.git $(CF_SRC)
 	cd $(CF_SRC) ; ./autogen.sh ; make
-	gcc -std=gnu99 -I/var/cfengine/include -I$(CF_SRC) -I$(CF_SRC)/libutils -I$(CF_SRC)/libpromises -I$(CF_SRC)/libcfnet  -L$(CF_SRC)/libpromises/.libs cf-keycrypt.c -Wl,-rpath,/var/cfengine/lib/ -lpromises -lcrypto -o cf-keycrypt
+	gcc -std=gnu99 -I/var/cfengine/include -I$(CF_SRC) -I$(CF_SRC)/libntech/libutils -I$(CF_SRC)/libpromises -I$(CF_SRC)/libcfnet  -L$(CF_SRC)/libpromises/.libs cf-keycrypt.c -Wl,-rpath,/var/cfengine/lib/ -lpromises -lcrypto -o cf-keycrypt
 	rm -rf $(CF_SRC) 
 	dh $@
 
